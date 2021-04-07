@@ -52,15 +52,47 @@ function generateRandomAge(){
 }
 
 /*** Document Load ****/
-function onLoad() {
+function onLoad () {
 
-    // generate a random animal when the document opens
-    let animal = generateRandomAnimal();
-    console.log(animal)
-    // update the page based on the animal properties
-    document.getElementById("animal-properties").textContent = animal.name + "  " + animal.age + "years old";
-    let imageTag = document.getElementById("animal-img");
-    imageTag.setAttribute("src", animal.image);
-    imageTag.setAttribute("alt", animal.image_alt);
-  
+  // get the savedAnimal in local storage if one exists
+  var animal = JSON.parse(localStorage.getItem("savedAnimal"));
+
+  //use a boolean to keep track of animal saved 
+  var hasSavedAnimal = false;
+
+  if (animal === null) 
+  {
+    document.getElementById("button-storage").textContent = "Save Animal";
+    animal = generateRandomAnimal();
+  } 
+  else 
+  {
+    document.getElementById("button-storage").textContent = "Clear Animal";
+    hasSavedAnimal = true;
   }
+
+  document.getElementById("animal-properties").textContent = animal.name + "  " + animal.age + "years old";
+  document.getElementById("animal-img").setAttribute("src", animal.image);
+
+
+  document.getElementById("button-storage").addEventListener("click", function() {
+    if (hasSavedAnimal) 
+    {
+      localStorage.removeItem("savedAnimal");
+
+      document.getElementById("button-storage").style.display = "none";
+      document.getElementById("button-action-text").textContent = "Cleared!";
+      document.getElementById("button-action-text").style.display = "block";
+    }
+
+    else 
+    {
+      localStorage.setItem("savedAnimal", JSON.stringify(animal));
+
+      document.getElementById("button-storage").style.display = "none";
+      document.getElementById("button-action-text").textContent = "Saved!";
+      document.getElementById("button-action-text").style.display = "block";
+    }
+  });
+
+};
